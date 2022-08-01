@@ -14,6 +14,8 @@ import { SupplierPaymentTypeModule } from './supplier-payment-type/supplier-paym
 import { EmployeePaymentTypeModule } from './employee-payment-type/employee-payment-type.module';
 import { AccountModule } from './account/account.module';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { EmployeeModule } from './employee/employee.module';
+import { EmployeePaymentModule } from './employee-payment/employee-payment.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { AuthenticationModule } from './authentication/authentication.module';
     EmployeePaymentTypeModule,
     AccountModule,
     AuthenticationModule,
+    EmployeeModule,
+    EmployeePaymentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

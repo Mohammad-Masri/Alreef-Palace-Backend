@@ -3,6 +3,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { GLOBAL_URL_PREFIX, SERVER_PORT } from './config/server_constant';
+import { EmployeeModule } from './employee/employee.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -19,7 +20,7 @@ async function bootstrap() {
     app,
     swagger_document,
     {
-      include: [AuthenticationModule],
+      include: [AuthenticationModule, EmployeeModule],
     },
   );
 
