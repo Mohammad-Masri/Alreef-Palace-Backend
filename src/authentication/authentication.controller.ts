@@ -1,4 +1,11 @@
-import { Body, Controller, HttpStatus, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOkResponse,
@@ -83,6 +90,21 @@ export class AuthenticationController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   async logout() {
+    return true;
+  }
+
+  @Get('/check-auth')
+  @ApiOperation({
+    summary: 'check is auth',
+    description: '',
+  })
+  @ApiOkResponse({
+    description: `is Auth success`,
+    type: Boolean,
+  })
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  async checkAuth() {
     return true;
   }
 }
