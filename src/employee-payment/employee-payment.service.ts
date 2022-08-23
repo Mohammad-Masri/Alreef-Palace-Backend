@@ -52,12 +52,12 @@ export class EmployeePaymentService {
   ) {
     const query: any = {};
     query['employee_id'] = employee_id;
-    if (date_1 != null || date_2 != null) {
+    if (date_1 != '' || date_2 != '') {
       query['date'] = {};
-      if (date_1 != null) {
+      if (date_1 != '') {
         query['date']['$gte'] = date_1;
       }
-      if (date_2 != null) {
+      if (date_2 != '') {
         query['date']['$lte'] = date_2;
       }
     }
@@ -79,12 +79,12 @@ export class EmployeePaymentService {
     const query: any = {};
     query['employee_id'] = employee_id;
     query['type.key'] = employee_payment_type;
-    if (date_1 != null || date_2 != null) {
+    if (date_1 != '' || date_2 != '') {
       query['date'] = {};
-      if (date_1 != null) {
+      if (date_1 != '') {
         query['date']['$gte'] = date_1;
       }
-      if (date_2 != null) {
+      if (date_2 != '') {
         query['date']['$lte'] = date_2;
       }
     }

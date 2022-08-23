@@ -22,6 +22,10 @@ export const EmployeeSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  is_deleted: {
+    type: Boolean,
+    default: false,
+  },
   created_at: {
     type: Date,
     default: currDate(),

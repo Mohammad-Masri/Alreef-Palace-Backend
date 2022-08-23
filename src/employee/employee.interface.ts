@@ -16,6 +16,8 @@ export default class IEmployee extends Document {
   position: string;
   @ApiProperty({ type: Boolean })
   in_working: boolean;
+  @ApiProperty({ type: Boolean })
+  is_deleted: boolean;
 
   readonly created_at: Date;
 }

@@ -17,7 +17,7 @@ export class EmployeeService {
   ) {}
 
   public async findAll() {
-    const employees = await this.EmployeeModel.find({});
+    const employees = await this.EmployeeModel.find({ is_deleted: false });
 
     return employees;
   }
@@ -46,6 +46,7 @@ export class EmployeeService {
     birthday: Date,
     salary: number,
     position: string,
+    in_working: boolean,
   ) {
     const employee = new this.EmployeeModel({
       name,
@@ -53,6 +54,7 @@ export class EmployeeService {
       birthday,
       salary,
       position,
+      in_working,
     });
 
     return await employee.save();
@@ -65,12 +67,14 @@ export class EmployeeService {
     birthday: Date,
     salary: number,
     position: string,
+    in_working: boolean,
   ) {
     employee.name = name;
     employee.phone_number = phone_number;
     employee.birthday = birthday;
     employee.salary = salary;
     employee.position = position;
+    employee.in_working = in_working;
 
     return await employee.save();
   }
@@ -82,8 +86,11 @@ export class EmployeeService {
   }
 
   public async delete(employee: IEmployee) {
-    return await employee.remove();
+    employee.is_deleted = true;
+    employee.in_working = false;
+    return await employee.save();
   }
+
   public async toggleInWorking(employee: IEmployee) {
     employee.in_working = !employee.in_working;
     return await employee.save();
@@ -91,12 +98,14 @@ export class EmployeeService {
 
   public async makeEmployeePaymentsWithNetAccountResponse(
     employee_payments: EmployeePaymentResponse[],
+    employee: IEmployee,
     net_account: number,
     from_date: Date | string,
     to_date: Date | string,
   ) {
     return new EmployeePaymentsWithNetAccountResponse(
       employee_payments,
+      employee,
       net_account,
       from_date,
       to_date,

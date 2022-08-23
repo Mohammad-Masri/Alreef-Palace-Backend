@@ -56,6 +56,7 @@ export class EmployeeController {
       createEmployeeInput.birthday,
       createEmployeeInput.salary,
       createEmployeeInput.position,
+      createEmployeeInput.in_working,
     );
 
     return await this.employeeService.findAll();
@@ -68,6 +69,14 @@ export class EmployeeController {
   })
   async getAllEmployees() {
     return await this.employeeService.findAll();
+  }
+
+  @Get('/:employee_id')
+  @ApiOkResponse({
+    type: IEmployee,
+  })
+  async getEmployee(@Param('employee_id') employee_id: string) {
+    return await this.employeeService.checkIfFindByIdAndGetIt(employee_id);
   }
 
   @Put('/:employee_id')
@@ -89,6 +98,7 @@ export class EmployeeController {
       createEmployeeInput.birthday,
       createEmployeeInput.salary,
       createEmployeeInput.position,
+      createEmployeeInput.in_working,
     );
     return await this.employeeService.findAll();
   }
@@ -106,25 +116,16 @@ export class EmployeeController {
     return await this.employeeService.findAll();
   }
 
-  @Put('/:employee_id/toggle-in-working')
-  @ApiOkResponse({
-    type: IEmployee,
-    isArray: true,
-  })
-  async toggleInWorkingEmployee(@Param('employee_id') employee_id: string) {
-    const employee = await this.employeeService.checkIfFindByIdAndGetIt(
-      employee_id,
-    );
-    await this.employeeService.toggleInWorking(employee);
-    return await this.employeeService.findAll();
-  }
-
   @Post('/employee-payment')
   @ApiOkResponse({
     type: EmployeePaymentsWithNetAccountResponse,
   })
+  @ApiQuery({ name: 'from_date', required: false })
+  @ApiQuery({ name: 'to_date', required: false })
   async createEmployeePayment(
     @Body() createEmployeePaymentInput: CreateEmployeePaymentInput,
+    @Query('from_date') from_date: string | null,
+    @Query('to_date') to_date: string | null,
   ) {
     const employee = await this.employeeService.checkIfFindByIdAndGetIt(
       createEmployeePaymentInput.employee_id,
@@ -169,8 +170,8 @@ export class EmployeeController {
     const employee_payments =
       await await this.employeePaymentService.findAllForEmployeeBetweenTowDate(
         employee.id,
-        first_date_of_month,
-        last_date_of_month,
+        from_date,
+        to_date,
       );
 
     const net_account =
@@ -186,15 +187,16 @@ export class EmployeeController {
     const result =
       await this.employeeService.makeEmployeePaymentsWithNetAccountResponse(
         employee_payments_response,
+        employee,
         net_account,
-        first_date_of_month,
-        last_date_of_month,
+        from_date,
+        to_date,
       );
 
     return result;
   }
 
-  @Get('/employee-payment/:employee_id')
+  @Get('/employee-payment/get-all/:employee_id')
   @ApiOkResponse({
     type: EmployeePaymentsWithNetAccountResponse,
   })
@@ -205,12 +207,6 @@ export class EmployeeController {
     @Query('from_date') from_date: string | null,
     @Query('to_date') to_date: string | null,
   ) {
-    if (from_date == '') {
-      from_date = null;
-    }
-    if (to_date == '') {
-      to_date = null;
-    }
     console.log('from_date : ', from_date);
     console.log('to_date : ', to_date);
     const employee = await this.employeeService.checkIfFindByIdAndGetIt(
@@ -237,12 +233,28 @@ export class EmployeeController {
     const result =
       await this.employeeService.makeEmployeePaymentsWithNetAccountResponse(
         employee_payments_response,
+        employee,
         net_account,
         from_date,
         to_date,
       );
 
     return result;
+  }
+
+  @Get('/employee-payment/:employee_payment_id')
+  @ApiOkResponse({
+    type: IEmployeePayment,
+  })
+  async getEmployeePayment(
+    @Param('employee_payment_id') employee_payment_id: string,
+  ) {
+    const employee_payment =
+      await await this.employeePaymentService.checkIfFindByIdAndGetIt(
+        employee_payment_id,
+      );
+
+    return employee_payment;
   }
 
   @Put('/employee-payment/:employee_payment_id')
@@ -299,6 +311,7 @@ export class EmployeeController {
     const result =
       await this.employeeService.makeEmployeePaymentsWithNetAccountResponse(
         employee_payments_response,
+        employee,
         net_account,
         first_date_of_month,
         last_date_of_month,
@@ -311,8 +324,12 @@ export class EmployeeController {
   @ApiOkResponse({
     type: EmployeePaymentsWithNetAccountResponse,
   })
+  @ApiQuery({ name: 'from_date', required: false })
+  @ApiQuery({ name: 'to_date', required: false })
   async deleteEmployeePayment(
     @Param('employee_payment_id') employee_payment_id: string,
+    @Query('from_date') from_date: string | null,
+    @Query('to_date') to_date: string | null,
   ) {
     const employee_payment =
       await this.employeePaymentService.checkIfFindByIdAndGetIt(
@@ -321,10 +338,6 @@ export class EmployeeController {
 
     await this.employeePaymentService.delete(employee_payment);
 
-    const date = employee_payment.date;
-    const { first_date_of_month, last_date_of_month } =
-      await getFirstDateAndLastDateInMonth(date);
-
     const employee = await this.employeeService.checkIfFindByIdAndGetIt(
       employee_payment.employee_id,
     );
@@ -332,8 +345,8 @@ export class EmployeeController {
     const employee_payments =
       await await this.employeePaymentService.findAllForEmployeeBetweenTowDate(
         employee.id,
-        first_date_of_month,
-        last_date_of_month,
+        from_date,
+        to_date,
       );
 
     const net_account =
@@ -349,9 +362,10 @@ export class EmployeeController {
     const result =
       await this.employeeService.makeEmployeePaymentsWithNetAccountResponse(
         employee_payments_response,
+        employee,
         net_account,
-        first_date_of_month,
-        last_date_of_month,
+        from_date,
+        to_date,
       );
 
     return result;

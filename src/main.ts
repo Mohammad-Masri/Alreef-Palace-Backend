@@ -10,6 +10,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix(GLOBAL_URL_PREFIX);
 
+  app.enableCors();
   const swagger_document = new DocumentBuilder()
     .setTitle('AlReef Palace API')
     .setVersion('1.0.0')

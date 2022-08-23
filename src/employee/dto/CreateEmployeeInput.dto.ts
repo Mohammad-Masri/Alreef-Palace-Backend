@@ -11,4 +11,6 @@ export class CreateEmployeeInput {
   salary: number;
   @ApiProperty({ type: String })
   position: string;
+  @ApiProperty({ type: Boolean })
+  in_working: boolean;
 }
