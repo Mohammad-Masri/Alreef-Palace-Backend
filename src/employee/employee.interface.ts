@@ -14,6 +14,8 @@ export default class IEmployee extends Document {
   joining_date: Date;
   @ApiProperty({ type: Number })
   salary: number;
+  @ApiProperty({ type: Number })
+  one_day_vacation_discount: number;
   @ApiProperty({ type: String })
   position: string;
   @ApiProperty({ type: Boolean })

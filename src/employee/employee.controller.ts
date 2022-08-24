@@ -56,6 +56,7 @@ export class EmployeeController {
       createEmployeeInput.birthday,
       createEmployeeInput.joining_date,
       createEmployeeInput.salary,
+      createEmployeeInput.one_day_vacation_discount,
       createEmployeeInput.position,
       createEmployeeInput.in_working,
     );
@@ -99,6 +100,7 @@ export class EmployeeController {
       createEmployeeInput.birthday,
       createEmployeeInput.joining_date,
       createEmployeeInput.salary,
+      createEmployeeInput.one_day_vacation_discount,
       createEmployeeInput.position,
       createEmployeeInput.in_working,
     );

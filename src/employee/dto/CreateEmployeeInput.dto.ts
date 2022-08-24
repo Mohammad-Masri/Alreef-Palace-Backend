@@ -11,6 +11,8 @@ export class CreateEmployeeInput {
   joining_date: Date | null;
   @ApiProperty({ type: Number })
   salary: number;
+  @ApiProperty({ type: Number })
+  one_day_vacation_discount: number;
   @ApiProperty({ type: String })
   position: string;
   @ApiProperty({ type: Boolean })

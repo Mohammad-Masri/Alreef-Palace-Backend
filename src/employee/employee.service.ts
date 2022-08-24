@@ -46,6 +46,7 @@ export class EmployeeService {
     birthday: Date | null,
     joining_date: Date | null,
     salary: number,
+    one_day_vacation_discount: number,
     position: string,
     in_working: boolean,
   ) {
@@ -55,6 +56,7 @@ export class EmployeeService {
       birthday,
       joining_date,
       salary,
+      one_day_vacation_discount,
       position,
       in_working,
     });
@@ -69,6 +71,7 @@ export class EmployeeService {
     birthday: Date | null,
     joining_date: Date | null,
     salary: number,
+    one_day_vacation_discount: number,
     position: string,
     in_working: boolean,
   ) {
@@ -77,6 +80,7 @@ export class EmployeeService {
     employee.birthday = birthday;
     employee.joining_date = joining_date;
     employee.salary = salary;
+    employee.one_day_vacation_discount = one_day_vacation_discount;
     employee.position = position;
     employee.in_working = in_working;
 

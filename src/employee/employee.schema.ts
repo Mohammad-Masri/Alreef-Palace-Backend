@@ -18,6 +18,9 @@ export const EmployeeSchema = new mongoose.Schema({
   salary: {
     type: Number,
   },
+  one_day_vacation_discount: {
+    type: Number,
+  },
   position: {
     type: String,
   },
