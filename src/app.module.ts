@@ -16,9 +16,15 @@ import { AccountModule } from './account/account.module';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { EmployeeModule } from './employee/employee.module';
 import { EmployeePaymentModule } from './employee-payment/employee-payment.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'dashboard'),
+      exclude: ['/api*'],
+    }),
     MongooseModule.forRoot(
       `mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}`,
     ),

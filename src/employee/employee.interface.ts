@@ -10,6 +10,8 @@ export default class IEmployee extends Document {
   phone_number: string;
   @ApiProperty({ type: String })
   birthday: Date;
+  @ApiProperty({ type: String })
+  joining_date: Date;
   @ApiProperty({ type: Number })
   salary: number;
   @ApiProperty({ type: String })

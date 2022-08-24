@@ -12,6 +12,9 @@ export const EmployeeSchema = new mongoose.Schema({
   birthday: {
     type: Date,
   },
+  joining_date: {
+    type: Date,
+  },
   salary: {
     type: Number,
   },

@@ -43,7 +43,8 @@ export class EmployeeService {
   public async create(
     name: string,
     phone_number: string,
-    birthday: Date,
+    birthday: Date | null,
+    joining_date: Date | null,
     salary: number,
     position: string,
     in_working: boolean,
@@ -52,6 +53,7 @@ export class EmployeeService {
       name,
       phone_number,
       birthday,
+      joining_date,
       salary,
       position,
       in_working,
@@ -64,7 +66,8 @@ export class EmployeeService {
     employee: IEmployee,
     name: string,
     phone_number: string,
-    birthday: Date,
+    birthday: Date | null,
+    joining_date: Date | null,
     salary: number,
     position: string,
     in_working: boolean,
@@ -72,6 +75,7 @@ export class EmployeeService {
     employee.name = name;
     employee.phone_number = phone_number;
     employee.birthday = birthday;
+    employee.joining_date = joining_date;
     employee.salary = salary;
     employee.position = position;
     employee.in_working = in_working;
