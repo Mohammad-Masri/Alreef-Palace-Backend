@@ -7,6 +7,8 @@ import { EmployeePaymentTypeService } from 'src/employee-payment-type/employee-p
 import { EmployeePaymentTypeSchema } from 'src/employee-payment-type/employee-payment-type.schema';
 import { EmployeePaymentService } from 'src/employee-payment/employee-payment.service';
 import { EmployeePaymentSchema } from 'src/employee-payment/employee-payment.schema';
+import { EmployeeVacationSchema } from 'src/employee-vacation/employee-vacation.schema';
+import { EmployeeVacationService } from 'src/employee-vacation/employee-vacation.service';
 
 @Module({
   imports: [
@@ -23,6 +25,10 @@ import { EmployeePaymentSchema } from 'src/employee-payment/employee-payment.sch
         name: 'employee_payments', // note : name here must be like name in employee_payments service
         schema: EmployeePaymentSchema,
       },
+      {
+        name: 'employee_vacations', // note : name here must be like name in employee_vacations service
+        schema: EmployeeVacationSchema,
+      },
     ]),
   ],
   controllers: [EmployeeController],
@@ -30,6 +36,7 @@ import { EmployeePaymentSchema } from 'src/employee-payment/employee-payment.sch
     EmployeeService,
     EmployeePaymentTypeService,
     EmployeePaymentService,
+    EmployeeVacationService,
   ],
 })
 export class EmployeeModule {}

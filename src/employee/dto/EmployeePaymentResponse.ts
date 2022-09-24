@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
 import { ObjectId } from 'mongoose';
 import IEmployeePayment from 'src/employee-payment/employee-payment.interface';

@@ -18,6 +18,7 @@ import { EmployeeModule } from './employee/employee.module';
 import { EmployeePaymentModule } from './employee-payment/employee-payment.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { EmployeeVacationModule } from './employee-vacation/employee-vacation.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { join } from 'path';
     AuthenticationModule,
     EmployeeModule,
     EmployeePaymentModule,
+    EmployeeVacationModule,
   ],
   controllers: [AppController],
   providers: [AppService],

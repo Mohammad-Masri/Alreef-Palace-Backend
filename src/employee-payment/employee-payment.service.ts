@@ -52,12 +52,12 @@ export class EmployeePaymentService {
   ) {
     const query: any = {};
     query['employee_id'] = employee_id;
-    if (date_1 != '' || date_2 != '') {
+    if ((date_1 != '' && date_1 != null) || (date_2 != '' && date_2 != null)) {
       query['date'] = {};
-      if (date_1 != '') {
+      if (date_1 != '' && date_1 != null) {
         query['date']['$gte'] = date_1;
       }
-      if (date_2 != '') {
+      if (date_2 != '' && date_2 != null) {
         query['date']['$lte'] = date_2;
       }
     }
@@ -79,12 +79,12 @@ export class EmployeePaymentService {
     const query: any = {};
     query['employee_id'] = employee_id;
     query['type.key'] = employee_payment_type;
-    if (date_1 != '' || date_2 != '') {
+    if ((date_1 != '' && date_1 != null) || (date_2 != '' && date_2 != null)) {
       query['date'] = {};
-      if (date_1 != '') {
+      if (date_1 != '' && date_1 != null) {
         query['date']['$gte'] = date_1;
       }
-      if (date_2 != '') {
+      if (date_2 != '' && date_2 != null) {
         query['date']['$lte'] = date_2;
       }
     }
@@ -155,7 +155,7 @@ export class EmployeePaymentService {
   public async makeEmployeePaymentsResponse(
     employee_payments: IEmployeePayment[],
   ) {
-    const employee_payments_response = [];
+    const employee_payments_response: EmployeePaymentResponse[] = [];
     for (let i = 0; i < employee_payments.length; i++) {
       const employee_payment_response = await this.makeEmployeePaymentResponse(
         employee_payments[i],

@@ -21,6 +21,8 @@ import { CREATE_SALARY_EMPLOYEE_PAYMENT_FAILED_THERE_IS_ONE_ALREADY_FOR_THIS_MON
 import { EmployeePaymentTypeService } from 'src/employee-payment-type/employee-payment-type.service';
 import IEmployeePayment from 'src/employee-payment/employee-payment.interface';
 import { EmployeePaymentService } from 'src/employee-payment/employee-payment.service';
+import IEmployeeVacation from 'src/employee-vacation/employee-vacation.interface';
+import { EmployeeVacationService } from 'src/employee-vacation/employee-vacation.service';
 import ServerError from 'src/errors/ServerError';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { getFirstDateAndLastDateInMonth } from 'src/helper/moment.helper';
@@ -30,7 +32,10 @@ import {
   CreateEmployeePaymentInput,
   UpdateEmployeePaymentInput,
 } from './dto/CreateEmployeePaymentInput.dto';
+import { CreateEmployeeVacationInput } from './dto/CreateEmployeeVacationInput.dto';
+import { EmployeeFinancialReport } from './dto/EmployeeFinancialReport.dto';
 import { EmployeePaymentsWithNetAccountResponse } from './dto/EmployeePaymentResponse';
+import { EmployeeVacationsWithTotalDiscountResponse } from './dto/EmployeeVacationResponse';
 import IEmployee from './employee.interface';
 import { EmployeeService } from './employee.service';
 
@@ -43,7 +48,9 @@ export class EmployeeController {
     private readonly employeeService: EmployeeService,
     private readonly employeePaymentTypeService: EmployeePaymentTypeService,
     private readonly employeePaymentService: EmployeePaymentService,
+    private readonly employeeVacationService: EmployeeVacationService,
   ) {}
+
   @Post('/')
   @ApiOkResponse({
     type: IEmployee,
@@ -120,9 +127,10 @@ export class EmployeeController {
     return await this.employeeService.findAll();
   }
 
+  // Employee Payment
   @Post('/employee-payment')
   @ApiOkResponse({
-    type: EmployeePaymentsWithNetAccountResponse,
+    type: EmployeeFinancialReport,
   })
   @ApiQuery({ name: 'from_date', required: false })
   @ApiQuery({ name: 'to_date', required: false })
@@ -171,33 +179,14 @@ export class EmployeeController {
       createEmployeePaymentInput.date,
     );
 
-    const employee_payments =
-      await await this.employeePaymentService.findAllForEmployeeBetweenTowDate(
-        employee.id,
-        from_date,
-        to_date,
-      );
-
-    const net_account =
-      await this.employeePaymentService.getNetAccountForThisEmployeePayments(
-        employee_payments,
-      );
-
-    const employee_payments_response =
-      await this.employeePaymentService.makeEmployeePaymentsResponse(
-        employee_payments,
-      );
-
-    const result =
-      await this.employeeService.makeEmployeePaymentsWithNetAccountResponse(
-        employee_payments_response,
+    const financial_report =
+      await this.employeeService.generateFinancialReportBetweenTwoDate(
         employee,
-        net_account,
         from_date,
         to_date,
       );
 
-    return result;
+    return financial_report;
   }
 
   @Get('/employee-payment/get-all/:employee_id')
@@ -263,11 +252,15 @@ export class EmployeeController {
 
   @Put('/employee-payment/:employee_payment_id')
   @ApiOkResponse({
-    type: EmployeePaymentsWithNetAccountResponse,
+    type: EmployeeFinancialReport,
   })
+  @ApiQuery({ name: 'from_date', required: false })
+  @ApiQuery({ name: 'to_date', required: false })
   async updateEmployeePayment(
     @Param('employee_payment_id') employee_payment_id: string,
     @Body() updateEmployeePaymentInput: UpdateEmployeePaymentInput,
+    @Query('from_date') from_date: string | null,
+    @Query('to_date') to_date: string | null,
   ) {
     const employee_payment =
       await this.employeePaymentService.checkIfFindByIdAndGetIt(
@@ -287,46 +280,23 @@ export class EmployeeController {
       updateEmployeePaymentInput.date,
     );
 
-    const date = new Date(updateEmployeePaymentInput.date);
-    const { first_date_of_month, last_date_of_month } =
-      await getFirstDateAndLastDateInMonth(date);
-
     const employee = await this.employeeService.checkIfFindByIdAndGetIt(
       employee_payment.employee_id,
     );
 
-    const employee_payments =
-      await await this.employeePaymentService.findAllForEmployeeBetweenTowDate(
-        employee.id,
-        first_date_of_month,
-        last_date_of_month,
-      );
-
-    const net_account =
-      await this.employeePaymentService.getNetAccountForThisEmployeePayments(
-        employee_payments,
-      );
-
-    const employee_payments_response =
-      await this.employeePaymentService.makeEmployeePaymentsResponse(
-        employee_payments,
-      );
-
-    const result =
-      await this.employeeService.makeEmployeePaymentsWithNetAccountResponse(
-        employee_payments_response,
+    const financial_report =
+      await this.employeeService.generateFinancialReportBetweenTwoDate(
         employee,
-        net_account,
-        first_date_of_month,
-        last_date_of_month,
+        from_date,
+        to_date,
       );
 
-    return result;
+    return financial_report;
   }
 
   @Delete('/employee-payment/:employee_payment_id')
   @ApiOkResponse({
-    type: EmployeePaymentsWithNetAccountResponse,
+    type: EmployeeFinancialReport,
   })
   @ApiQuery({ name: 'from_date', required: false })
   @ApiQuery({ name: 'to_date', required: false })
@@ -346,32 +316,199 @@ export class EmployeeController {
       employee_payment.employee_id,
     );
 
-    const employee_payments =
-      await await this.employeePaymentService.findAllForEmployeeBetweenTowDate(
+    const financial_report =
+      await this.employeeService.generateFinancialReportBetweenTwoDate(
+        employee,
+        from_date,
+        to_date,
+      );
+
+    return financial_report;
+  }
+
+  // Employee Vacation
+  @Post('/employee-vacation')
+  @ApiOkResponse({
+    type: EmployeeFinancialReport,
+  })
+  @ApiQuery({ name: 'from_date', required: false })
+  @ApiQuery({ name: 'to_date', required: false })
+  async createNewEmployeeVacation(
+    @Body() createEmployeeVacationInput: CreateEmployeeVacationInput,
+    @Query('from_date') from_date: string | null,
+    @Query('to_date') to_date: string | null,
+  ) {
+    console.log('from_date : ', from_date);
+    console.log('to_date : ', to_date);
+    const employee = await this.employeeService.checkIfFindByIdAndGetIt(
+      createEmployeeVacationInput.employee_id,
+    );
+
+    const employee_vacation = await this.employeeVacationService.create(
+      employee.id,
+      createEmployeeVacationInput.reason,
+      createEmployeeVacationInput.discount_value,
+      createEmployeeVacationInput.date,
+    );
+
+    const financial_report =
+      await this.employeeService.generateFinancialReportBetweenTwoDate(
+        employee,
+        from_date,
+        to_date,
+      );
+
+    return financial_report;
+  }
+
+  @Get('/employee-vacation/get-all/:employee_id')
+  @ApiOkResponse({
+    type: EmployeeVacationsWithTotalDiscountResponse,
+  })
+  @ApiQuery({ name: 'from_date', required: false })
+  @ApiQuery({ name: 'to_date', required: false })
+  async getAllEmployeeVacationsForEmployeeBetweenTwoDates(
+    @Param('employee_id') employee_id: string,
+    @Query('from_date') from_date: string | null,
+    @Query('to_date') to_date: string | null,
+  ) {
+    console.log('from_date : ', from_date);
+    console.log('to_date : ', to_date);
+    const employee = await this.employeeService.checkIfFindByIdAndGetIt(
+      employee_id,
+    );
+
+    const employee_vacations =
+      await await this.employeeVacationService.findAllForEmployeeBetweenTowDate(
         employee.id,
         from_date,
         to_date,
       );
 
-    const net_account =
-      await this.employeePaymentService.getNetAccountForThisEmployeePayments(
-        employee_payments,
-      );
-
-    const employee_payments_response =
-      await this.employeePaymentService.makeEmployeePaymentsResponse(
-        employee_payments,
-      );
-
-    const result =
-      await this.employeeService.makeEmployeePaymentsWithNetAccountResponse(
-        employee_payments_response,
-        employee,
-        net_account,
+    const employee_vacations_response =
+      await this.employeeService.makeEmployeeVacationsWithTotalDiscountResponse(
+        employee_vacations,
         from_date,
         to_date,
       );
 
-    return result;
+    return employee_vacations_response;
+  }
+
+  @Get('/employee-vacation/:employee_vacation_id')
+  @ApiOkResponse({
+    type: IEmployeeVacation,
+  })
+  async getEmployeeVacation(
+    @Param('employee_vacation_id') employee_vacation_id: string,
+  ) {
+    const employee_vacation =
+      await await this.employeeVacationService.checkIfFindByIdAndGetIt(
+        employee_vacation_id,
+      );
+
+    return employee_vacation;
+  }
+
+  @Put('/employee-vacation/:employee_vacation_id')
+  @ApiOkResponse({
+    type: EmployeeFinancialReport,
+  })
+  @ApiQuery({ name: 'from_date', required: false })
+  @ApiQuery({ name: 'to_date', required: false })
+  async updateEmployeeVacation(
+    @Param('employee_vacation_id') employee_vacation_id: string,
+    @Body() createEmployeeVacationInput: CreateEmployeeVacationInput,
+    @Query('from_date') from_date: string | null,
+    @Query('to_date') to_date: string | null,
+  ) {
+    console.log('from_date : ', from_date);
+    console.log('to_date : ', to_date);
+    const employee_vacation =
+      await this.employeeVacationService.checkIfFindByIdAndGetIt(
+        employee_vacation_id,
+      );
+
+    const employee = await this.employeeService.checkIfFindByIdAndGetIt(
+      createEmployeeVacationInput.employee_id,
+    );
+
+    await this.employeeVacationService.update(
+      employee_vacation,
+      employee.id,
+      createEmployeeVacationInput.reason,
+      createEmployeeVacationInput.discount_value,
+      createEmployeeVacationInput.date,
+    );
+
+    const financial_report =
+      await this.employeeService.generateFinancialReportBetweenTwoDate(
+        employee,
+        from_date,
+        to_date,
+      );
+
+    return financial_report;
+  }
+
+  @Delete('/employee-vacation/:employee_vacation_id')
+  @ApiOkResponse({
+    type: EmployeeFinancialReport,
+  })
+  @ApiQuery({ name: 'from_date', required: false })
+  @ApiQuery({ name: 'to_date', required: false })
+  async deleteEmployeeVacation(
+    @Param('employee_vacation_id') employee_vacation_id: string,
+    @Query('from_date') from_date: string | null,
+    @Query('to_date') to_date: string | null,
+  ) {
+    console.log('from_date : ', from_date);
+    console.log('to_date : ', to_date);
+    const employee_vacation =
+      await this.employeeVacationService.checkIfFindByIdAndGetIt(
+        employee_vacation_id,
+      );
+
+    const employee = await this.employeeService.checkIfFindByIdAndGetIt(
+      employee_vacation.employee_id,
+    );
+
+    await this.employeeVacationService.delete(employee_vacation);
+
+    const financial_report =
+      await this.employeeService.generateFinancialReportBetweenTwoDate(
+        employee,
+        from_date,
+        to_date,
+      );
+
+    return financial_report;
+  }
+
+  @Get('/financial-report/:employee_id')
+  @ApiOkResponse({
+    type: EmployeeFinancialReport,
+  })
+  @ApiQuery({ name: 'from_date', required: false })
+  @ApiQuery({ name: 'to_date', required: false })
+  async getEmployeeFinancialReportBetweenTwoDates(
+    @Param('employee_id') employee_id: string,
+    @Query('from_date') from_date: string | null,
+    @Query('to_date') to_date: string | null,
+  ) {
+    console.log('from_date : ', from_date);
+    console.log('to_date : ', to_date);
+    const employee = await this.employeeService.checkIfFindByIdAndGetIt(
+      employee_id,
+    );
+
+    const financial_report =
+      await this.employeeService.generateFinancialReportBetweenTwoDate(
+        employee,
+        from_date,
+        to_date,
+      );
+
+    return financial_report;
   }
 }
