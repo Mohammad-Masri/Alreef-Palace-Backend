@@ -19,9 +19,9 @@ export class EmployeeFinancialReport {
   @ApiProperty({ type: Number })
   employee_vacations_total_discount: number;
   @ApiProperty({ type: String })
-  from_date: Date | string;
+  from_date: Date | string | null;
   @ApiProperty({ type: String })
-  to_date: Date | string;
+  to_date: Date | string | null;
   @ApiProperty({ type: Number })
   net_account: number;
 

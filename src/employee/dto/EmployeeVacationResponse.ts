@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { ApiProperty } from '@nestjs/swagger';
 import { ObjectId } from 'mongoose';
 import IEmployeeVacation from 'src/employee-vacation/employee-vacation.interface';
@@ -13,6 +14,8 @@ export class EmployeeVacationResponse {
   discount_value: number;
   @ApiProperty({ type: Date })
   date: Date;
+  @ApiProperty({ type: Date })
+  created_at: Date;
 
   constructor(employee_vacation: IEmployeeVacation) {
     this.id = employee_vacation.id;
@@ -20,6 +23,7 @@ export class EmployeeVacationResponse {
     this.reason = employee_vacation.reason;
     this.discount_value = employee_vacation.discount_value;
     this.date = employee_vacation.date;
+    this.created_at = employee_vacation.created_at;
   }
 }
 
