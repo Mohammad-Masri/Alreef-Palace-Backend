@@ -1,4 +1,5 @@
-import { EmployeePaymentTypes } from '../../config/server_constant';
+/* eslint-disable prettier/prettier */
+import { EmployeePaymentTypes } from 'src/config/server_constant';
 
 export const employee_payment_types = [
   {
@@ -14,3 +15,5 @@ export const employee_payment_types = [
     name: 'سلفة',
   },
 ];
+
+export default employee_payment_types;

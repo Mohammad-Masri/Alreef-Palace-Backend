@@ -18,7 +18,8 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "seed": "npx nestjs-command seed:branches && npx nestjs-command seed:employee-payment-types && npx nestjs-command seed:bill-types && npx nestjs-command seed:export-bill-types && npx nestjs-command seed:supplier-payment-types && npx nestjs-command seed:admin-account"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
@@ -31,6 +32,7 @@
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.4",
     "mongoose": "^6.5.2",
+    "nestjs-command": "^3.1.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",

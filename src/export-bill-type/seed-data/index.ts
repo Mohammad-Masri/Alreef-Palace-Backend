@@ -1,4 +1,5 @@
-import { ExportBillTypes } from '../../config/server_constant';
+/* eslint-disable prettier/prettier */
+import { ExportBillTypes } from 'src/config/server_constant';
 
 export const export_bill_types = [
   {
@@ -10,3 +11,5 @@ export const export_bill_types = [
     name: 'تأسيسية',
   },
 ];
+
+export default export_bill_types;

@@ -1,4 +1,5 @@
-import { BillTypes } from '../../config/server_constant';
+/* eslint-disable prettier/prettier */
+import { BillTypes } from 'src/config/server_constant';
 
 export const bill_types = [
   {
@@ -10,3 +11,5 @@ export const bill_types = [
     name: 'واردات',
   },
 ];
+
+export default bill_types;

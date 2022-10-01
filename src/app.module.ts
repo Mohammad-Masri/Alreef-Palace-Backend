@@ -3,9 +3,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import {
-  DATABASE_HOST,
-  DATABASE_NAME,
-  DATABASE_PORT,
+  MONGO_DATABASE_HOST,
+  MONGO_DATABASE_NAME,
+  MONGO_DATABASE_PASSWORD,
+  MONGO_DATABASE_USERNAME,
 } from './config/server_constant';
 import { BranchModule } from './branch/branch.module';
 import { ExportBillTypeModule } from './export-bill-type/export-bill-type.module';
@@ -19,15 +20,17 @@ import { EmployeePaymentModule } from './employee-payment/employee-payment.modul
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { EmployeeVacationModule } from './employee-vacation/employee-vacation.module';
+import { CommandModule } from 'nestjs-command';
 
 @Module({
   imports: [
+    CommandModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'dashboard'),
       exclude: ['/api*'],
     }),
     MongooseModule.forRoot(
-      `mongodb://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}`,
+      `mongodb+srv://${MONGO_DATABASE_USERNAME}:${MONGO_DATABASE_PASSWORD}@${MONGO_DATABASE_HOST}/${MONGO_DATABASE_NAME}?retryWrites=true&w=majority`,
     ),
     BranchModule,
     ExportBillTypeModule,

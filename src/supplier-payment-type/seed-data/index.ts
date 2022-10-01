@@ -1,4 +1,5 @@
-import { SupplierPaymentTypes } from '../../config/server_constant';
+/* eslint-disable prettier/prettier */
+import { SupplierPaymentTypes } from 'src/config/server_constant';
 
 export const supplier_payment_types = [
   {
@@ -10,3 +11,5 @@ export const supplier_payment_types = [
     name: 'واردات',
   },
 ];
+
+export default supplier_payment_types;

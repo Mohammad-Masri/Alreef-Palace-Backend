@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 export const branches = [
   {
     name: 'قصر الريف - الفرع الاول',
@@ -6,3 +7,4 @@ export const branches = [
     name: 'قصر الريف - الفرع الثاني',
   },
 ];
+export default branches;
