@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 // environment variable
-export const SERVER_PORT = 8080;
+export const SERVER_PORT = 3000;
 
 export const MONGO_DATABASE_HOST = 'alreef-palace.svapd8o.mongodb.net';
 export const MONGO_DATABASE_PORT = 27017;
