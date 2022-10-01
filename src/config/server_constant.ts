@@ -4,7 +4,7 @@ export const SERVER_PORT = 8080;
 
 export const MONGO_DATABASE_HOST = 'alreef-palace.svapd8o.mongodb.net';
 export const MONGO_DATABASE_PORT = 27017;
-export const MONGO_DATABASE_NAME = 'dev_alreef_palace_db';
+export const MONGO_DATABASE_NAME = 'testing_alreef_palace_db';
 export const MONGO_DATABASE_USERNAME = 'alreefpalace165';
 export const MONGO_DATABASE_PASSWORD = 'pKeHETnukbPe1jnx';
 
